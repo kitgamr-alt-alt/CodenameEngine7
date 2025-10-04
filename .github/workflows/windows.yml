@@ -17,7 +17,6 @@ jobs:
       - name: Restore existing build cache for faster compilation
         uses: actions/cache@v3
         with:
-          # not caching the bin folder to prevent asset duplication and stuff like that
           key: cache-build-windows
           path: |
             .haxelib/
@@ -30,13 +29,9 @@ jobs:
           haxe -cp commandline -D analyzer-optimize --run Main setup -s --no-vscheck
       - name: Install MinGW (for Windows 7 compatibility)
         run: |
-          # Use Chocolatey to install MinGW (pre-installed on windows-latest runner)
           choco install mingw -y
-          # The MINGW_ROOT is set here, but we will redefine it in the next step's env block
-          # for better reliability against hxcpp.
         shell: powershell
       - name: Building the game
-        # NEW: Explicitly define the MINGW_ROOT environment variable for this step only.
         env:
           MINGW_ROOT: C:\ProgramData\chocolatey\lib\mingw\tools\install
         run: |
@@ -73,7 +68,6 @@ jobs:
       - name: Uploading new cache
         uses: actions/cache@v3
         with:
-          # caching again since for some reason it doesnt work with the first post cache shit
           key: cache-build-windows
           path: |
             .haxelib/
