@@ -31,11 +31,12 @@ jobs:
         run: |
           choco install mingw -y
         shell: powershell
+
       - name: Building the game
         env:
           MINGW_ROOT: C:\ProgramData\chocolatey\lib\mingw\tools\install
         run: |
-          haxelib run lime build windows -D mingw
+          haxelib run lime build windows -D mingw -D NO_OPTIMUS_ENABLEMENT
       - name: Uploading artifact (executable)
         uses: actions/upload-artifact@v4
         with:
