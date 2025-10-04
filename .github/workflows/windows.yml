@@ -31,7 +31,12 @@ jobs:
         run: |
           choco install mingw -y
         shell: powershell
-
+      - name: Clean Build Directories
+        shell: powershell
+        run: |
+          # The -ErrorAction SilentlyContinue prevents the step from failing if the directories don't exist yet
+          Remove-Item -Path "export/release/windows/haxe/" -Recurse -Force -ErrorAction SilentlyContinue
+          Remove-Item -Path "export/release/windows/obj/" -Recurse -Force -ErrorAction SilentlyContinue
       - name: Building the game
         env:
           MINGW_ROOT: C:\ProgramData\chocolatey\lib\mingw\tools\install
