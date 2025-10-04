@@ -28,9 +28,23 @@ jobs:
       - name: Installing/Updating libraries
         run: |
           haxe -cp commandline -D analyzer-optimize --run Main setup -s --no-vscheck
+      
+      # install mingw
+      - name: Install MinGW (Windows 7)
+        run: |
+          # Use Chocolatey to install MinGW (pre-installed on windows-latest runner)
+          choco install mingw -y
+          
+          # Tell hxcpp where MinGW is installed by setting the MINGW_ROOT environment variable
+          # The path below is the default for MinGW installed via Chocolatey
+          echo "MINGW_ROOT=C:\ProgramData\chocolatey\lib\mingw\tools\install" >> $GITHUB_ENV
+        shell: powershell
+        
       - name: Building the game
         run: |
+          # ADDED '-D mingw' to use the newly installed MinGW toolchain
           haxelib run lime build windows -D mingw
+          
       - name: Uploading artifact (executable)
         uses: actions/upload-artifact@v4
         with:
